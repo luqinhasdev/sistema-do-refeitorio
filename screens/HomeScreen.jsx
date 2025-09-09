@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 
 export default function HomeScreen({ navigation, route }) {
   const [students, setStudents] = useState([]);
@@ -16,62 +24,130 @@ export default function HomeScreen({ navigation, route }) {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 22, fontWeight: "bold", marginBottom: 20 }}>
-        Sistema de Cantina
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.header}>🍽 Sistema de Cantina</Text>
 
-      <Button
-        title="Bater Facial"
-        onPress={() => navigation.navigate("CameraScreen")}
-      />
+      <View style={styles.buttonGroup}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => navigation.navigate("CameraScreen")}
+        >
+          <Text style={styles.buttonText}>📸 Bater Facial</Text>
+        </TouchableOpacity>
 
-      <View style={{ marginTop: 20 }}>
-        <Button
-          title="Cadastrar Aluno"
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: "#4CAF50" }]}
           onPress={() => navigation.navigate("RegisterStudent")}
-        />
+        >
+          <Text style={styles.buttonText}>➕ Cadastrar Aluno</Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={{ marginTop: 20, flex: 1 }}>
-        <Text style={{ fontSize: 18, marginBottom: 10 }}>
-          Alunos Registrados:
-        </Text>
+      <Text style={styles.subHeader}>Alunos Registrados:</Text>
+
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         {students.map((item) => (
-          <View
-            key={item.id}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 10,
-              padding: 10,
-              borderWidth: 1,
-              borderRadius: 8,
-            }}
-          >
+          <View key={item.id} style={styles.card}>
             {item.photo && (
-              <Image
-                source={{ uri: item.photo }}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                  marginRight: 10,
-                }}
-              />
+              <Image source={{ uri: item.photo }} style={styles.avatar} />
             )}
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 16 }}>{item.name}</Text>
-              <Text style={{ color: "gray" }}>
+              <Text style={styles.studentName}>{item.name}</Text>
+              <Text style={styles.studentInfo}>
                 Matrícula: {item.registration}
               </Text>
             </View>
-            <TouchableOpacity onPress={() => removeStudent(item.id)}>
-              <Text style={{ color: "red" }}>Remover</Text>
+            <TouchableOpacity
+              style={styles.removeButton}
+              onPress={() => removeStudent(item.id)}
+            >
+              <Text style={styles.removeText}>Remover</Text>
             </TouchableOpacity>
           </View>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#F5F6FA",
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+    color: "#333",
+  },
+  subHeader: {
+    fontSize: 18,
+    marginVertical: 15,
+    fontWeight: "600",
+    color: "#444",
+  },
+  buttonGroup: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  actionButton: {
+    flex: 1,
+    backgroundColor: "#007BFF",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginHorizontal: 5,
+    elevation: 3, // sombra no Android
+    shadowColor: "#000", // sombra no iOS
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    backgroundColor: "#FFF",
+    borderRadius: 12,
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  avatar: {
+    width: 55,
+    height: 55,
+    borderRadius: 30,
+    marginRight: 12,
+    backgroundColor: "#EEE",
+  },
+  studentName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#222",
+  },
+  studentInfo: {
+    fontSize: 14,
+    color: "#666",
+  },
+  removeButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+    backgroundColor: "#FF4444",
+  },
+  removeText: {
+    color: "#FFF",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+});
